@@ -1,13 +1,21 @@
-import {API} from './api';
+import $ from 'jquery';
+import API from './api';
+require('imports-loader?$=jquery!../node_modules/imagelightbox/dist/imagelightbox.min.js');
+import '../node_modules/imagelightbox/dist/imagelightbox.min.css';
 
 $(() => {
-    API.getPhotos().then(list);
-
     const $imageList = $('#imageList');
     const $imageTemplate = $('#imageTemplate').html();
+    
+    API.getPhotos().then(setGallery);
 
-    function list(image) {
-        $imageList.html(image.map(generateImageHTML).join('\n'));
+    function setGallery(imagesArray) {
+        renderImageList(imagesArray);
+        initGallary();
+    }
+
+    function renderImageList(images) {
+        $imageList.html(images.map(generateImageHTML).join('\n'));
     }
     
     function generateImageHTML(image) {
@@ -18,6 +26,8 @@ $(() => {
         .replace('{{url}}', image.url)
         .replace('{{thumbnailUrl}}', image.thumbnailUrl);
     }
-    $('a[data-imagelightbox="demo"]').imageLightbox();
+    function initGallary() {
+        $('a[data-imagelightbox="demo"]').imageLightbox();
+    }
 });
 
